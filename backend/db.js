@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 // hashinh password-
 const bcrypt = require("bcrypt");
+const { Schema } = require("zod");
 mongoose.connect(
   "mongodb+srv://gourishmarkan13:Gourish1@paytm-clone-frontend.dbuywex.mongodb.net/"
 );
@@ -34,10 +35,21 @@ const userSchema = new mongoose.Schema({
     maxLenght: 50,
   },
 });
+const accountSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId, //Reference to User Model
+    ref: "User",
+    required: true,
+  },
+  balance: {
+    type: Number,
+    required: true,
+  },
+});
 // Method to generate a hash from plain text
 userSchema.methods.createHash = async (plainTextPassword) => {
-  // Hashing user's salt and password with 10 iterations,
-  const saltRounds = 10;
+  // Hashing user's salt and password with 13 iterations,
+  const saltRounds = 13;
 
   // First method to generate a salt and then create hash
   const salt = await bcrypt.genSalt(saltRounds);
@@ -50,4 +62,6 @@ userSchema.methods.validatePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password_hash);
 };
 const User = mongoose.model("User", userSchema);
-module.exports = { User };
+const Account = mongoose.model("Account", accountSchema);
+
+module.exports = { User, Account };
