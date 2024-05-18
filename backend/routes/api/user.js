@@ -27,9 +27,9 @@ const updateBody = zod.object({
   lastName: zod.string().optional(),
 });
 // signUP------
-router.post("/signUp", async (req, res, next) => {
+router.post("/signup", async (req, res, next) => {
   const { success } = signupBody.safeParse(req.body);
-  if (!sucess) {
+  if (!success) {
     return res.status(411).json({
       message: "Email already taken / Incorrect inputs",
     });
@@ -43,16 +43,16 @@ router.post("/signUp", async (req, res, next) => {
       message: "Email already taken/Incorrect inputs",
     });
   }
+  // hashing password--
   const user = await User.create({
     username: req.body.username,
-    // password: req.body.password,
+    password: req.body.password,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
   });
-  // hashing password--
-  const hashedPassword = await user.createHash(req.body.password);
-  user.password_hash = hashedPassword;
 
+  const hashedPassword = await user.createHash(req.body.password);
+  user.password = hashedPassword;
   // Save newUser object to database-
   await user.save();
 
@@ -77,7 +77,7 @@ router.post("/signUp", async (req, res, next) => {
   console.log("signup working");
 });
 // SignIn-----
-router.post("/signIn", authMiddleware, async (req, res, next) => {
+router.post("/signin", authMiddleware, async (req, res, next) => {
   const { success } = signinBody.safeParse(req.body);
   if (!success) {
     return res.status(411).json({

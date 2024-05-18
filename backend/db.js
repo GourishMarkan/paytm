@@ -1,10 +1,15 @@
 const mongoose = require("mongoose");
 // hashinh password-
 const bcrypt = require("bcrypt");
-const { Schema } = require("zod");
-mongoose.connect(
-  "mongodb+srv://gourishmarkan13:Gourish1@paytm-clone-frontend.dbuywex.mongodb.net/"
-);
+
+// mongoose.connect(
+//   "mongodb+srv://gourishmarkan13:Gourish1@paytm-clone-frontend.dbuywex.mongodb.net/"
+// );
+const dbConnect = async () => {
+  const connDb = await mongoose.connect("mongodb://localhost:27017/paytm");
+
+  console.log("db call");
+};
 
 // create a Schema for users-
 const userSchema = new mongoose.Schema({
@@ -64,4 +69,4 @@ userSchema.methods.validatePassword = async function (candidatePassword) {
 const User = mongoose.model("User", userSchema);
 const Account = mongoose.model("Account", accountSchema);
 
-module.exports = { User, Account };
+module.exports = { User, Account, dbConnect };
