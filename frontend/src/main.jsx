@@ -12,7 +12,7 @@ import {
 import Signin from "./pages/SignIn.jsx";
 import Dashboard from "./pages/Dashboard";
 import Signup from "./pages/Signup";
-import SendMoney from "./pages/SendMoney";
+import { SendMoney } from "./pages/SendMoney";
 import Layout from "./Layout.jsx";
 
 const router = createBrowserRouter(
@@ -21,7 +21,7 @@ const router = createBrowserRouter(
       <Route path="signin" element={<Signin />} />
       <Route path="signup" element={<Signup />} />
       <Route path="dashboard" element={<Dashboard />} />
-      <Route path="send " element={<SendMoney />} />
+      <Route path="send" element={<SendMoney />} />
     </Route>
   )
 );
