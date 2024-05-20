@@ -52,9 +52,9 @@ const accountSchema = new mongoose.Schema({
   },
 });
 // Method to generate a hash from plain text
-userSchema.methods.createHash = async (plainTextPassword) => {
+userSchema.methods.createHash = async function (plainTextPassword) {
   // Hashing user's salt and password with 13 iterations,
-  const saltRounds = 13;
+  const saltRounds = 10;
 
   // First method to generate a salt and then create hash
   const salt = await bcrypt.genSalt(saltRounds);
@@ -63,9 +63,11 @@ userSchema.methods.createHash = async (plainTextPassword) => {
   // return await bcrypt.hash(plainTextPassword, saltRounds);
 };
 // Validating the candidate password with stored hash and hash function
+
 userSchema.methods.validatePassword = async function (candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password_hash);
+  return await bcrypt.compare(candidatePassword, this.password);
 };
+
 const User = mongoose.model("User", userSchema);
 const Account = mongoose.model("Account", accountSchema);
 

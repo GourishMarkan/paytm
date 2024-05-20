@@ -1,23 +1,18 @@
 const express = require("express");
 
-const { User, Account } = require("../../db");
+const router = express.Router();
 const zod = require("zod");
+const { User, Account } = require("../../db");
 const jwt = require("jsonwebtoken");
 // const asyncHandler = require("express-async-handler");
 const JWT_SECRET = require("../../config");
 const { authMiddleware } = require("../../middleware");
-const router = express.Router();
 // hashinh password-
 // const bcrypt = require("bcrypt");
 const signupBody = zod.object({
   username: zod.string().email(),
   firstName: zod.string(),
   lastName: zod.string(),
-  password: zod.string(),
-});
-
-const signinBody = zod.object({
-  username: zod.string().email(),
   password: zod.string(),
 });
 
@@ -77,17 +72,25 @@ router.post("/signup", async (req, res, next) => {
   console.log("signup working");
 });
 // SignIn-----
-router.post("/signin", authMiddleware, async (req, res, next) => {
+const signinBody = zod.object({
+  username: zod.string().email(),
+  password: zod.string(),
+});
+
+router.post("/signin", async (req, res) => {
   const { success } = signinBody.safeParse(req.body);
   if (!success) {
+    console.log(success);
     return res.status(411).json({
-      message: "Incorrect inputs",
+      message: "Email already taken / Incorrect inputs",
     });
   }
   // Find user with requested email
   const user = await User.findOne({
     username: req.body.username,
+    // password: req.body.password,
   });
+
   if (user) {
     if (await user.validatePassword(req.body.password)) {
       const token = jwt.sign(
